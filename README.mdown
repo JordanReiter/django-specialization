@@ -1,0 +1,33 @@
+# Site specification
+
+A terribly "simple" app which allows for site-branding depending on hostnames
+or similar.
+
+On the start of the request the middleware parses the request and stores the
+perceived hostname in a thread-local variable.
+
+The template loader uses this variable to se if there is a folder with the
+same name as the hostname in *SPECIALIZATION_DIR*. If such a folder exists,
+and a template matching template_name is present, that template is loaded,
+otherwise the request is passed on in the stack of loaders.
+
+This allows for dynamic override of templates based on hostname. The initial
+idea was to use this for specific site branding.
+
+## Configuration
+
+**SPECIALIZATION_DIR** - Specifies where to look for folders with templates.
+
+## Components
+
+### Middleware
+
+**specialization.middleware.SpecializationMiddleware**  
+Needs be in MIDDLEWARE_CLASSES. Otherwise the template loader doesn't know
+which hostnames to load templates for.
+
+### Template loader
+
+**specialization.loader.Loader**  
+Needs to be in TEMPLATE_LOADERS before the "standard" loaders. Otherwise the
+template will be loaded from the the "standard" locations.
